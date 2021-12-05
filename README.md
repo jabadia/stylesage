@@ -28,9 +28,8 @@ Note: I had to change `ALLOWED_HOSTS = []` to `ALLOWED_HOSTS = [‘*’]`.
 I've used Terraform for the IaC. I use it in a different way you will maybe see out there, instead of using `.tfvars` files I use a `workspace.tf` file to storage all the variables.
 
 I've separated the stack in two:
-
-    - Base: contains shared resources for apps stacks 
-    - App: contains specific application resources
+- Base: contains shared resources for apps stacks 
+- App: contains specific application resources
 
 I'm using terraform `terraform_remote_state` to talk between them. To be able to use this you need to talk between each other using a remote stack which I've stored in S3.
 
@@ -38,36 +37,33 @@ I'm using terraform `terraform_remote_state` to talk between them. To be able to
 I've tried using GitHub Actions (please be nice, I'm totally newbie here).
 
 I've written three workflows:
-
-    - pr-terraform.yaml: Makes a plan when you open a PR and have done changes on terraform directory
-    - pr-code-test.yaml: Runs application tests using github-actions services to have a useful postgresql and s3
-    - deployment.yaml: Runs deployment steps:
-        - Builds and pushes docker image to ECR
-        - Deploys base terraform stack on PRE environment
-        - Deploys app terraform stack on PRE environment
-        - Deploys base terraform stack on PRO environment
-        - Deploys app terraform stack on PRO environment
+- pr-terraform.yaml: Makes a plan when you open a PR and have done changes on terraform directory
+- pr-code-test.yaml: Runs application tests using github-actions services to have a useful postgresql and s3
+- deployment.yaml: Runs deployment steps:
+    - Builds and pushes docker image to ECR
+    - Deploys base terraform stack on PRE environment
+    - Deploys app terraform stack on PRE environment
+    - Deploys base terraform stack on PRO environment
+    - Deploys app terraform stack on PRO environment
 
 For deployment, instead of using AWS user credentials I'm using [GitHub OIDC](https://docs.github.com/es/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services) and a role to assume.
 I would need to research more about this as I'm not totally satisfied with it, but I think it's ok for a test.
-        
+    
 ### Is it advisable to use a container technology? Can you elaborate on advantages and disadvantages?
 For this application we are using on the test, yes, totally. It doesn't need too much resources to run and is a fast and cheap way to run it.
 
 Advantages:
-
-    - Flexibility: to use on or another code language you only need to choose the correct base image
-    - Easy management: they don't usually need much to do to run your application
-    - Deployment speed: build it, run it
-    - Scalability: much easier to scale when you divide your application in multiple services
-    - Security: if you do it right, it's just one piece to be accesed, so it's easier to limit/unlimit it
-    - Reliability: having an application divided in different microservices won't make the whole platform fail if one goes down
+- Flexibility: to use on or another code language you only need to choose the correct base image
+- Easy management: they don't usually need much to do to run your application
+- Deployment speed: build it, run it
+- Scalability: much easier to scale when you divide your application in multiple services
+- Security: if you do it right, it's just one piece to be accesed, so it's easier to limit/unlimit it
+- Reliability: having an application divided in different microservices won't make the whole platform fail if one goes down
 
 Disadvantages:
+- Costs: it depends on your architecture but dividing your application in different microservices can give you more costs than a monolithic
+- Data: unless you use external storage, if a container fails or goes down you will loose its data
 
-    - Costs: it depends on your architecture but dividing your application in different microservices can give you more costs than a monolithic
-    - Data: unless you use external storage, if a container fails or goes down you will loose its data
-  
 ### How do you deploy code the provisioned infrastructure?
 Using a docker image tagged with the commit so terraform can change it everytime there is a new release.
 
