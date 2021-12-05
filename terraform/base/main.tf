@@ -46,9 +46,9 @@ module "ecs" {
   source  = "terraform-aws-modules/ecs/aws"
   version = "3.4.1"
 
-  for_each           = local.ecs_clusters
-  name               = each.key
-  capacity_providers = local.ecs_clusters[each.key].capacity_providers
+  for_each                           = local.ecs_clusters
+  name                               = each.key
+  capacity_providers                 = local.ecs_clusters[each.key].capacity_providers
   default_capacity_provider_strategy = local.ecs_clusters[each.key].default_capacity_provider_strategy
-  tags               = local.tags
+  tags                               = local.tags
 }

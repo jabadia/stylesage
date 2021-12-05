@@ -27,5 +27,5 @@ output "certificate_arn" {
 }
 
 output "ecs_cluster_id" {
-  value = lookup(module.ecs, "${local.name_prefix}").ecs_cluster_id
+  value = lookup(module.ecs, local.name_prefix).ecs_cluster_id
 }

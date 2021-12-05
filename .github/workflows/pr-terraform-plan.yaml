@@ -1,0 +1,65 @@
+name: Plan on pull request
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "terraform/**"
+      - ".github/workflows/pr-terraform-plan.yaml"
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  AWS_REGION: "eu-west-1"
+  AWS_GITHUB_ROLE: ${{ secrets.AWS_GITHUB_ROLE }}
+  AWS_ECR_URL: ${{ secrets.AWS_ECR_URL }}
+permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+jobs:
+  plan-base:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ env.AWS_GITHUB_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: terraform workspace
+        uses: dflook/terraform-new-workspace@v1
+        with:
+          path: terraform/base
+          workspace: pro
+
+      - name: terraform plan
+        uses: dflook/terraform-plan@v1
+        with:
+          path: terraform/base
+          workspace: pro
+  plan-app:
+    runs-on: ubuntu-latest
+    needs: plan-base
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ env.AWS_GITHUB_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: terraform workspace
+        uses: dflook/terraform-new-workspace@v1
+        with:
+          path: terraform/app
+          workspace: pro
+
+      - name: terraform plan
+        uses: dflook/terraform-plan@v1
+        with:
+          path: terraform/app
+          workspace: pro
+          variables: |
+            image="${{ env.AWS_ECR_URL }}/stylesage/iotd:latest"
