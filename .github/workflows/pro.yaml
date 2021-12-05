@@ -12,7 +12,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_REGION: "eu-west-1"
-  WORKSPACE: "pro"
+  TF_WORKSPACE: "pro"
 permissions:
       id-token: write
       contents: read
@@ -59,13 +59,13 @@ jobs:
         uses: dflook/terraform-new-workspace@v1
         with:
           path: terraform/base
-          workspace: ${{ env.WORKSPACE }}
+          workspace: ${{ env.TF_WORKSPACE }}
 
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
           path: terraform/base
-          workspace: ${{ env.WORKSPACE }}
+          workspace: ${{ env.TF_WORKSPACE }}
 
   apply-tf-app:
     runs-on: ubuntu-latest
@@ -83,7 +83,7 @@ jobs:
         uses: dflook/terraform-new-workspace@v1
         with:
           path: terraform/app
-          workspace: ${{ env.WORKSPACE }}
+          workspace: ${{ env.TF_WORKSPACE }}
 
       - name: terraform apply
         uses: dflook/terraform-apply@v1
@@ -92,7 +92,7 @@ jobs:
           ECR_REPOSITORY: "stylesage/iotd"
           IMAGE_TAG: ${GITHUB_SHA}
           path: terraform/app
-          workspace: ${{ env.WORKSPACE }}
+          workspace: ${{ env.TF_WORKSPACE }}
           auto_approve: true
           variables: |
             image="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
