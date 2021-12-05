@@ -8,7 +8,7 @@ on:
       - "Pipfile*"
       - "terraform/**"
       - "Dockerfile"
-      - ".github/workflows/${{ env.WORKSPACE }}.yaml"
+      - ".github/workflows/pro.yaml"
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_REGION: "eu-west-1"
