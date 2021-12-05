@@ -8,19 +8,9 @@ on:
       - "Dockerfile"
       - "Pipfile*"
       - ".github/workflows/pr-code-test.yaml"
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  AWS_REGION: "eu-west-1"
-  AWS_GITHUB_ROLE: ${{ secrets.AWS_GITHUB_ROLE }}
-  AWS_ECR_URL: ${{ secrets.AWS_ECR_URL }}
-permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
 jobs:
   tests:
     runs-on: ubuntu-latest
-    container: python:3.7
     services:
       postgres:
         image: postgres:11.10
@@ -57,6 +47,7 @@ jobs:
       - name: Install dependencies
         run: pipenv install
       - name: Migrate & Run tests
+        working-directory: iotd
         env:
           DJANGO_SETTINGS_MODULE: "iotd.settings"
           RDS_DB_NAME: "iotd"
@@ -65,8 +56,8 @@ jobs:
           RDS_HOSTNAME: "postgres"
           RDS_PORT: "5432"
           S3_BUCKET_NAME: "http://s3:4566"
-          AWS_ACCESS_KEY_ID: test
-          AWS_SECRET_ACCESS_KEY: test
+          AWS_ACCESS_KEY_ID: "test"
+          AWS_SECRET_ACCESS_KEY: "test"
         run: |
           pipenv run python manage.py migrate
           pipenv run python manage.py createsu
