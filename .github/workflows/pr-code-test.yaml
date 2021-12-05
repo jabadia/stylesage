@@ -47,9 +47,15 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.7"
+      - name: Install pipenv
+        run: |
+          python -m pip install --upgrade pipenv wheel
       - name: Install dependencies
         run: pipenv install
-
       - name: Migrate & Run tests
         env:
           DJANGO_SETTINGS_MODULE: "iotd.settings"
