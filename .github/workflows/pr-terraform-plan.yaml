@@ -3,8 +3,8 @@ on:
   pull_request:
     branches:
       - master
-      paths:
-        - 'terraform/**'
+    paths:
+      - 'terraform/**'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_REGION: "eu-west-1"
