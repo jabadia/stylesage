@@ -1,0 +1,63 @@
+name: Test code on pull request
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "iotd/**"
+      - "Pipfile*"
+      - ".github/workflows/pr-code-test.yaml"
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11.10
+        env:
+          POSTGRES_DB: iotd
+          POSTGRES_USER: iotd_user
+          POSTGRES_PASSWORD: iotd_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      s3:
+        image: localstack/localstack:latest
+        env:
+          SERVICES: s3
+          DEFAULT_REGION: eu-west-1
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+        ports:
+          - 4566:4566
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.7"
+      - name: Install pipenv
+        run: |
+          python -m pip install --upgrade pipenv wheel
+      - name: Install dependencies
+        run: pipenv install
+      - name: Migrate & Run tests
+        working-directory: iotd
+        env:
+          DJANGO_SETTINGS_MODULE: "iotd.settings"
+          RDS_DB_NAME: "iotd"
+          RDS_USERNAME: "iotd_user"
+          RDS_PASSWORD: "iotd_pass"
+          RDS_HOSTNAME: "localhost"
+          RDS_PORT: "5432"
+          S3_BUCKET_NAME: "http://localhost:4566"
+          AWS_ACCESS_KEY_ID: "test"
+          AWS_SECRET_ACCESS_KEY: "test"
+        run: |
+          pipenv run python manage.py migrate
+          pipenv run python manage.py createsu
+          pipenv run python manage.py test
