@@ -36,7 +36,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       s3:
-        image: localstack:latest
+        image: localstack/localstack:latest
         env:
           SERVICES: s3
           DEFAULT_REGION: eu-west-1
