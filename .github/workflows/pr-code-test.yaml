@@ -53,9 +53,9 @@ jobs:
           RDS_DB_NAME: "iotd"
           RDS_USERNAME: "iotd_user"
           RDS_PASSWORD: "iotd_pass"
-          RDS_HOSTNAME: "postgres"
+          RDS_HOSTNAME: "localhost"
           RDS_PORT: "5432"
-          S3_BUCKET_NAME: "http://s3:4566"
+          S3_BUCKET_NAME: "http://localhost:4566"
           AWS_ACCESS_KEY_ID: "test"
           AWS_SECRET_ACCESS_KEY: "test"
         run: |
