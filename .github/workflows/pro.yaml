@@ -39,7 +39,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_URL }}
           ECR_REPOSITORY: "stylesage/iotd"
-          IMAGE_TAG: ${{ env.GITHUB_SHA }}
+          IMAGE_TAG: $GITHUB_SHA
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -91,7 +91,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_URL }}
           ECR_REPOSITORY: "stylesage/iotd"
-          IMAGE_TAG: ${{ env.GITHUB_SHA }}
+          IMAGE_TAG: $GITHUB_SHA
           path: terraform/app
           workspace: ${{ env.TF_WORKSPACE }}
           auto_approve: true
