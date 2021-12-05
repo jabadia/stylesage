@@ -46,27 +46,6 @@ module "bucket" {
   tags = local.tags
 }
 
-### CloudFront
-//module "cdn" {
-//  source  = "terraform-aws-modules/cloudfront/aws"
-//  version = "2.9.1"
-//
-//  for_each = local.cdns
-//
-//  aliases                       = local.cdns[each.key].aliases
-//  comment                       = each.key
-//  enabled                       = local.cdns[each.key].enabled
-//  retain_on_delete              = local.cdns[each.key].retain_on_delete
-//  wait_for_deployment           = local.cdns[each.key].wait_for_deployment
-//  create_origin_access_identity = local.cdns[each.key].create_origin_access_identity
-//  origin_access_identities      = local.cdns[each.key].origin_access_identities
-//  logging_config                = local.cdns[each.key].logging_config
-//  origin                        = local.cdns[each.key].origin
-//  default_cache_behavior        = local.cdns[each.key].default_cache_behavior
-//  ordered_cache_behavior        = local.cdns[each.key].ordered_cache_behavior
-//  viewer_certificate            = local.cdns[each.key].viewer_certificate
-//}
-
 ## IAM
 resource "aws_iam_role" "role" {
   for_each            = local.roles

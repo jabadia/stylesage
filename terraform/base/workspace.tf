@@ -1,6 +1,12 @@
 locals {
   ## Workspaces
   workspace_variables = {
+    pre = {
+      vpc = {
+        cidr = "10.0.0.0/16"
+      }
+      domain = "pre.cesararroba.com"
+    }
     pro = {
       vpc = {
         cidr = "10.10.0.0/16"
