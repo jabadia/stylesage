@@ -86,10 +86,10 @@ jobs:
           workspace: ${{ env.TF_WORKSPACE }}
 
       - name: terraform apply
-        uses: dflook/terraform-apply@v1
-        env:
-          path: terraform/app
-          workspace: ${{ env.TF_WORKSPACE }}
-          auto_approve: true
-          variables: |
-            image="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:$GITHUB_SHA"
+          uses: dflook/terraform-apply@v1
+          with:
+            path: terraform/base
+            workspace: ${{ env.TF_WORKSPACE }}
+            auto_approve: true
+            variables: |
+              image="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:$GITHUB_SHA"
