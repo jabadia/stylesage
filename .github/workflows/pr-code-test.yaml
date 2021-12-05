@@ -62,4 +62,3 @@ jobs:
           pipenv run python manage.py migrate
           pipenv run python manage.py createsu
           pipenv run python manage.py test
-          pipenv run python manage.py runserver
