@@ -1,0 +1,98 @@
+name: Pro deployment
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "iotd/**"
+      - "Pipfile*"
+      - "terraform/**"
+      - "Dockerfile"
+      - ".github/workflows/${{ env.WORKSPACE }}.yaml"
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  AWS_REGION: "eu-west-1"
+  WORKSPACE: "pro"
+permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ECR_URL }}
+          ECR_REPOSITORY: "stylesage/iotd"
+          IMAGE_TAG: ${GITHUB_SHA}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+  apply-tf-base:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: terraform workspace
+        uses: dflook/terraform-new-workspace@v1
+        with:
+          path: terraform/base
+          workspace: ${{ env.WORKSPACE }}
+
+      - name: terraform plan
+        uses: dflook/terraform-plan@v1
+        with:
+          path: terraform/base
+          workspace: ${{ env.WORKSPACE }}
+
+  apply-tf-app:
+    runs-on: ubuntu-latest
+    needs: plan-base
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: terraform workspace
+        uses: dflook/terraform-new-workspace@v1
+        with:
+          path: terraform/app
+          workspace: ${{ env.WORKSPACE }}
+
+      - name: terraform apply
+        uses: dflook/terraform-apply@v1
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ECR_URL }}
+          ECR_REPOSITORY: "stylesage/iotd"
+          IMAGE_TAG: ${GITHUB_SHA}
+          path: terraform/app
+          workspace: ${{ env.WORKSPACE }}
+          auto_approve: true
+          variables: |
+            image="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
