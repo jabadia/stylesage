@@ -69,7 +69,7 @@ jobs:
 
   apply-tf-app:
     runs-on: ubuntu-latest
-    needs: plan-base
+    needs: apply-tf-base
     steps:
       - uses: actions/checkout@v2
 
