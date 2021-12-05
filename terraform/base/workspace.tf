@@ -69,19 +69,4 @@ locals {
       ]
     }
   }
-  records = {
-    "iotd.${data.terraform_remote_state.base.outputs.zone_name}" = {
-      zone_name = data.terraform_remote_state.base.outputs.zone_name
-      records = [
-        {
-          name = "iotd"
-          type = "CNAME"
-          ttl  = 300
-          records = [
-            lookup(module.alb, "${local.name_prefix}-alb").lb_dns_name
-          ]
-        },
-      ]
-    }
-  }
 }
