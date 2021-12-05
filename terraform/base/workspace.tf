@@ -58,7 +58,6 @@ locals {
       default_capacity_provider_strategy = [
         {
           capacity_provider = "FARGATE"
-          base              = 0
           weight            = 1
         }
       ]
