@@ -30,13 +30,13 @@ jobs:
         uses: dflook/terraform-new-workspace@v1
         with:
           path: terraform/base
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: pro
 
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
           path: terraform/base
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: pro
   plan-app:
     runs-on: ubuntu-latest
     steps:
@@ -52,7 +52,7 @@ jobs:
         uses: dflook/terraform-new-workspace@v1
         with:
           path: terraform/app
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: pro
 
       - name: terraform plan
         uses: dflook/terraform-plan@v1
@@ -60,6 +60,6 @@ jobs:
           IMAGE: "${{ env.AWS_ECR_URL }}/stylesage/iot:latest"
         with:
           path: terraform/app
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: pro
           variables: |
             image=$IMAGE
