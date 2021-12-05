@@ -15,9 +15,9 @@ env:
   ECR_REPOSITORY: "stylesage/iotd"
   TF_WORKSPACE: "pre"
 permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
+  id-token: write
+  contents: read
+  pull-requests: write
 jobs:
   plan-base:
     runs-on: ubuntu-latest

@@ -15,9 +15,9 @@ env:
   ECR_REGISTRY: ${{ secrets.AWS_ECR_URL }}
   ECR_REPOSITORY: "stylesage/iotd"
 permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
+  id-token: write
+  contents: read
+  pull-requests: write
 jobs:
   build:
     runs-on: ubuntu-latest
