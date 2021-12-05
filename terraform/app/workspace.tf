@@ -342,11 +342,11 @@ locals {
     }
   }
   records = {
-    "iotd.${data.terraform_remote_state.base.outputs.zone_name}" = {
+    "oitd.${data.terraform_remote_state.base.outputs.zone_name}" = {
       zone_name = data.terraform_remote_state.base.outputs.zone_name
       records = [
         {
-          name = "iotd"
+          name = "oitd"
           type = "CNAME"
           ttl  = 300
           records = [
