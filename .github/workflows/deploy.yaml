@@ -67,6 +67,7 @@ jobs:
         with:
           path: ${{ env.TF_PATH }}
           workspace: ${{ env.TF_WORKSPACE }}
+          auto_approve: true
 
   app-pre:
     runs-on: ubuntu-latest
@@ -94,6 +95,7 @@ jobs:
         with:
           path: ${{ env.TF_PATH }}
           workspace: ${{ env.TF_WORKSPACE }}
+          auto_approve: true
           variables: |
             image="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:$GITHUB_SHA"
 
@@ -123,6 +125,7 @@ jobs:
         with:
           path: ${{ env.TF_PATH }}
           workspace: ${{ env.TF_WORKSPACE }}
+          auto_approve: true
 
   app-pro:
     runs-on: ubuntu-latest
@@ -150,5 +153,6 @@ jobs:
         with:
           path: ${{ env.TF_PATH }}
           workspace: ${{ env.TF_WORKSPACE }}
+          auto_approve: true
           variables: |
             image="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:$GITHUB_SHA"
