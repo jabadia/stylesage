@@ -62,4 +62,4 @@ jobs:
           path: terraform/app
           workspace: pro
           variables: |
-            image=${{ env.AWS_ECR_URL }}"/stylesage/iotd:latest"
+            image='${{ env.AWS_ECR_URL }}/stylesage/iotd:latest'
