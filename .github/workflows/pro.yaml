@@ -66,7 +66,7 @@ jobs:
         with:
           path: terraform/base
           workspace: ${{ env.TF_WORKSPACE }}
-            auto_approve: true
+          auto_approve: true
 
   apply-tf-app:
     runs-on: ubuntu-latest
