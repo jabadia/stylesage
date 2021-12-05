@@ -59,7 +59,7 @@ jobs:
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         env:
-          IMAGE: '${{ env.AWS_ECR_URL }}/stylesage/iotd:latest'
+          IMAGE: ${{ env.AWS_ECR_URL }}"/stylesage/iotd:latest"
         with:
           path: terraform/app
           workspace: pro
