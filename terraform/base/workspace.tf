@@ -1,6 +1,12 @@
 locals {
   ## Workspaces
   workspace_variables = {
+    pre = {
+      vpc = {
+        cidr = "10.0.0.0/16"
+      }
+      domain = "pre.cesararroba.com"
+    }
     pro = {
       vpc = {
         cidr = "10.10.0.0/16"
@@ -60,6 +66,21 @@ locals {
           capacity_provider = "FARGATE"
           weight            = 1
         }
+      ]
+    }
+  }
+  records = {
+    "iotd.${data.terraform_remote_state.base.outputs.zone_name}" = {
+      zone_name = data.terraform_remote_state.base.outputs.zone_name
+      records = [
+        {
+          name = "iotd"
+          type = "CNAME"
+          ttl  = 300
+          records = [
+            lookup(module.alb, "${local.name_prefix}-alb").lb_dns_name
+          ]
+        },
       ]
     }
   }

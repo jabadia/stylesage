@@ -1,6 +1,7 @@
 locals {
   ## Workspaces
   workspace_variables = {
+    pre = {}
     pro = {}
   }
 
@@ -57,52 +58,6 @@ locals {
       attach_policy                  = false
     }
   }
-  //  cdns = {
-  //    "${local.name_prefix}-statics" = {
-  //      aliases                       = ["statics.${data.terraform_remote_state.base.outputs.zone_name}"]
-  //      enabled                       = true
-  //      retain_on_delete              = false
-  //      wait_for_deployment           = true
-  //      create_origin_access_identity = true
-  //      origin_access_identities = {
-  //        s3_bucket_statics = lookup(module.bucket, "${local.name_prefix}-statics").s3_bucket_id
-  //      }
-  //      logging_config = {
-  //        bucket = lookup(module.bucket, "${local.name_prefix}-cdn-logging").s3_bucket_bucket_domain_name
-  //      }
-  //      origin = {
-  //        s3_statics = {
-  //          domain_name = lookup(module.bucket, "${local.name_prefix}-statics").s3_bucket_bucket_domain_name
-  //          s3_origin_config = {
-  //            origin_access_identity = "s3_bucket_statics"
-  //          }
-  //        }
-  //      }
-  //      default_cache_behavior = {
-  //        target_origin_id       = "something"
-  //        viewer_protocol_policy = "allow-all"
-  //        allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-  //        cached_methods         = ["GET", "HEAD"]
-  //        compress               = true
-  //        query_string           = true
-  //      }
-  //      ordered_cache_behavior = [
-  //        {
-  //          path_pattern           = "/*"
-  //          target_origin_id       = "s3_statics"
-  //          viewer_protocol_policy = "redirect-to-https"
-  //          allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-  //          cached_methods         = ["GET", "HEAD"]
-  //          compress               = true
-  //          query_string           = true
-  //        }
-  //      ]
-  //      viewer_certificate = {
-  //        acm_certificate_arn = data.terraform_remote_state.base.outputs.certificate_arn
-  //        ssl_support_method  = "sni-only"
-  //      }
-  //    }
-  //  }
   roles = {
     "${local.name_prefix}-ecs-role" = {
       assume_role_policy = jsonencode({
